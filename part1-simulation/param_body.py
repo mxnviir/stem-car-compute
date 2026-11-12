@@ -470,9 +470,8 @@ def _stamp_bore(g, X, Y, Z) -> int:
     R_out = R + 3.05                                                 # T5.5, plus a margin
     # The wall's distance stops at the rear face and the bore's inner end too: run a cell
     # past the rear face, it stood 181 mm3 outside the official block (Part 4, 2026-11-09).
-    wall_s = np.minimum(np.minimum(R_out - rad, x_rear - X), X - x_end)    # + inside the wall
-    wall = (rad > R) & (wall_s > -1.5 * d_mm)
-    g.phi.grid[wall] = np.minimum(g.phi.grid[wall], (-wall_s[wall] / 1e3).astype(np.float32))
+    wall = (X >= x_end) & (X <= x_rear) & (rad <= R_out + 1.5 * d_mm) & (rad > R)
+    g.phi.grid[wall] = np.minimum(g.phi.grid[wall], ((rad[wall] - R_out) / 1e3).astype(np.float32))
     zone = in_x & (rad <= R + 1.5 * d_mm) & ((g.phi.grid < 0) | (sd > 0))
     g.phi.grid[zone] = (sd[zone] / 1e3).astype(np.float32)
     g.phi.apply_hard_constraints()
