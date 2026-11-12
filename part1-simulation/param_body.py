@@ -337,8 +337,6 @@ def build(W_mm: float, x_front_mm: float, d_halo_mm: float, bp: BodyParams,
         rep["zone_cells_stamped"] = exact_zones.stamp(g, X, Y, Z)   # last: the zones' true faces
         # A stamp can cut a thin neck: drop what came loose and close pinches again, or the
         # field held 4 bodies under a 1-piece mesh (Part 4, 2026-11-09).
-        rep["islands_after_stamp_mm3"] = _drop_islands(g) * (d * 1e3) ** 3
-        rep["pinch_cells_after_stamp"] = _close_pinches(g, d)
         g.spacing_m = d
         g.build_report = dict(rep, skin_offset_mm=offset_mm)
         return g
