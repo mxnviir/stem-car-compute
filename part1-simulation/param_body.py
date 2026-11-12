@@ -519,7 +519,7 @@ def _shave_to(g, target_kg: float, mass, spacing_m: float, XYZ, tol_kg: float = 
     return None, 0.0, n
 
 
-MILL_SPACING_MM = 0.5
+MILL_SPACING_MM = 1e9
 
 
 class _spacing:
