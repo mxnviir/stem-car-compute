@@ -1193,7 +1193,9 @@ def extract_unified_surface(
     # part at z 4 mm, y +-8 mm, after the 0.5 mm milling moved the floor; 2026-11-12): marching
     # cubes then makes edges shared by four faces and no repair closes them. Close them here,
     # where every whole-car extraction passes.
-    close_pinches(geom, GRID_SPACING_M)
+    _z = geom.phi.grid == 0
+    print("LAB zeros", int(_z.sum()), np.round(np.argwhere(_z).min(0) if _z.any() else [], 0).tolist(), flush=True)
+    geom.phi.grid[_z] = np.float32(1e-9)
     mesh = SE._repair_mesh(SE._marching_cubes(geom.phi))
 
     # ── Stage 3a: machining radius, milled vertices only ───────────────────
