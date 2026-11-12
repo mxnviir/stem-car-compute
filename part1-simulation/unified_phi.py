@@ -1189,6 +1189,11 @@ def extract_unified_surface(
     filled = nearest_labels(geom)
     milled_ids = {LABEL_IDS[n] for n in MILLED_COMPONENTS}
 
+    # The parts added to the body can meet it along one cell edge only (L1: body floor and a
+    # part at z 4 mm, y +-8 mm, after the 0.5 mm milling moved the floor; 2026-11-12): marching
+    # cubes then makes edges shared by four faces and no repair closes them. Close them here,
+    # where every whole-car extraction passes.
+    close_pinches(geom, GRID_SPACING_M)
     mesh = SE._repair_mesh(SE._marching_cubes(geom.phi))
 
     # ── Stage 3a: machining radius, milled vertices only ───────────────────
