@@ -778,8 +778,8 @@ def _check_mesh_quality(mesh: "trimesh.Trimesh", component: str) -> None:
                 _e = _np.sort(mesh.edges, axis=1); _cnt = _c.Counter(map(tuple, _e))
                 _bad = [k for k, v in _cnt.items() if v != 2]
                 print("LAB open edges", len(_bad), "counts", _c.Counter(_cnt[k] for k in _bad), flush=True)
-                for k in _bad[:40]: print("LAB edge", _cnt[k], _np.round(mesh.vertices[list(k)].mean(0) * 1e3, 2).tolist(), flush=True)
-                print("LAB bodies", len(mesh.split(only_watertight=False)), "bounds", _np.round(mesh.bounds * 1e3, 1).tolist(), flush=True)
+                _m = _np.array([mesh.vertices[list(k)].mean(0) for k in _bad]) * 1e3 if _bad else _np.zeros((1, 3))
+                print("LAB where", len(mesh.split(only_watertight=False)), _np.round(_m.min(0), 1).tolist(), _np.round(_m.max(0), 1).tolist(), [(_cnt[k], _np.round(mesh.vertices[list(k)].mean(0) * 1e3, 1).tolist()) for k in _bad[:6]], flush=True)
                 raise MeshQualityFailure(
                     f"{component}: Mesh is not watertight after repair."
                 )
